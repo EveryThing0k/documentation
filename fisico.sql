@@ -76,7 +76,9 @@ CREATE TABLE project (
 
 CREATE TABLE task (
     fk_activity_fk_content_id INTEGER PRIMARY KEY,
-    fk_type_id INTEGER
+    fk_type_id INTEGER,
+    data_entry DATE,
+    data_end DATE
 );
 
 CREATE TABLE employee_company (
