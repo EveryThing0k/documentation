@@ -7,7 +7,9 @@ CREATE TABLE status (
 
 CREATE TABLE people (
     id INTEGER PRIMARY KEY,
-    name VARCHAR
+    name VARCHAR,
+    e_mail VARCHAR,
+    password VARCHAR
 );
 
 CREATE TABLE physical (
@@ -37,7 +39,8 @@ CREATE TABLE positions (
 
 CREATE TABLE company (
     fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_address_id INTEGER
+    fk_address_id INTEGER,
+    fantasy_name VARCHAR
 );
 
 CREATE TABLE address (
