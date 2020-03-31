@@ -49,12 +49,8 @@ CREATE TABLE address (
     number INTEGER,
     id INTEGER PRIMARY KEY,
     street VARCHAR,
-    fk_country_id INTEGER
-);
-
-CREATE TABLE country (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR
+    state VARCHAR,
+    city VARCHAR
 );
 
 CREATE TABLE content (
@@ -140,8 +136,8 @@ ALTER TABLE company ADD CONSTRAINT FK_company_3
     ON DELETE RESTRICT;
  
 ALTER TABLE address ADD CONSTRAINT FK_address_2
-    FOREIGN KEY (fk_country_id)
-    REFERENCES country (id)
+    FOREIGN KEY (fk_country_id???)
+    REFERENCES ??? (???)
     ON DELETE CASCADE;
  
 ALTER TABLE activity ADD CONSTRAINT FK_activity_2
