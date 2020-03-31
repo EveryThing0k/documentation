@@ -8,8 +8,8 @@ CREATE TABLE status (
 CREATE TABLE people (
     id INTEGER PRIMARY KEY,
     name VARCHAR,
-    e_mail VARCHAR,
-    password VARCHAR
+    password VARCHAR,
+    e_mail VARCHAR
 );
 
 CREATE TABLE physical (
@@ -24,23 +24,28 @@ CREATE TABLE legal (
 
 CREATE TABLE type (
     id INTEGER PRIMARY KEY,
-    name VARCHAR
+    name VARCHAR,
+    fk_project_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE employee (
+    level INTEGER,
     fk_physical_fk_people_id INTEGER PRIMARY KEY,
     fk_positions_id INTEGER
 );
 
 CREATE TABLE positions (
     id INTEGER PRIMARY KEY,
-    name VARCHAR
+    name VARCHAR,
+    access_level INTEGER,
+    descripition VARCHAR,
+    fk_company_fk_legal_fk_people_id INTEGER
 );
 
 CREATE TABLE company (
+    fantasy_name VARCHAR,
     fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_address_id INTEGER,
-    fantasy_name VARCHAR
+    fk_address_id INTEGER
 );
 
 CREATE TABLE address (
@@ -49,8 +54,8 @@ CREATE TABLE address (
     number INTEGER,
     id INTEGER PRIMARY KEY,
     street VARCHAR,
-    state VARCHAR,
-    city VARCHAR
+    city VARCHAR,
+    state VARCHAR
 );
 
 CREATE TABLE content (
@@ -74,13 +79,21 @@ CREATE TABLE project (
 );
 
 CREATE TABLE task (
+    data_entry DATE,
+    data_end DATE,
     fk_activity_fk_content_id INTEGER PRIMARY KEY,
     fk_type_id INTEGER,
-    data_entry DATE,
-    data_end DATE
+    fk_project_fk_activity_fk_content_id INTEGER
 );
 
-CREATE TABLE employee_company (
+CREATE TABLE level_project (
+    level INTEGER,
+    fk_project_fk_activity_fk_content_id INTEGER,
+    fk_task_fk_activity_fk_content_id INTEGER,
+    fk_employee_fk_physical_fk_people_id INTEGER
+);
+
+CREATE TABLE company_employee (
     fk_company_fk_legal_fk_people_id INTEGER,
     fk_employee_fk_physical_fk_people_id INTEGER
 );
@@ -88,11 +101,6 @@ CREATE TABLE employee_company (
 CREATE TABLE project_company (
     fk_company_fk_legal_fk_people_id INTEGER,
     fk_project_fk_activity_fk_content_id INTEGER
-);
-
-CREATE TABLE project_task (
-    fk_project_fk_activity_fk_content_id INTEGER,
-    fk_task_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE task_score (
@@ -115,9 +123,14 @@ ALTER TABLE legal ADD CONSTRAINT FK_legal_2
     REFERENCES people (id)
     ON DELETE CASCADE;
  
+ALTER TABLE type ADD CONSTRAINT FK_type_2
+    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
+    REFERENCES project (fk_activity_fk_content_id)
+    ON DELETE CASCADE;
+ 
 ALTER TABLE employee ADD CONSTRAINT FK_employee_2
-    FOREIGN KEY (fk_physical_cpf???, fk_physical_fk_people_id)
-    REFERENCES physical (???, fk_people_id)
+    FOREIGN KEY (fk_physical_fk_people_id)
+    REFERENCES physical (fk_people_id)
     ON DELETE CASCADE;
  
 ALTER TABLE employee ADD CONSTRAINT FK_employee_3
@@ -125,20 +138,20 @@ ALTER TABLE employee ADD CONSTRAINT FK_employee_3
     REFERENCES positions (id)
     ON DELETE CASCADE;
  
+ALTER TABLE positions ADD CONSTRAINT FK_positions_2
+    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
+    REFERENCES company (fk_legal_fk_people_id)
+    ON DELETE CASCADE;
+ 
 ALTER TABLE company ADD CONSTRAINT FK_company_2
-    FOREIGN KEY (fk_legal_cnpj???, fk_legal_fk_people_id)
-    REFERENCES legal (???, fk_people_id)
+    FOREIGN KEY (fk_legal_fk_people_id)
+    REFERENCES legal (fk_people_id)
     ON DELETE CASCADE;
  
 ALTER TABLE company ADD CONSTRAINT FK_company_3
     FOREIGN KEY (fk_address_id)
     REFERENCES address (id)
     ON DELETE RESTRICT;
- 
-ALTER TABLE address ADD CONSTRAINT FK_address_2
-    FOREIGN KEY (fk_country_id???)
-    REFERENCES ??? (???)
-    ON DELETE CASCADE;
  
 ALTER TABLE activity ADD CONSTRAINT FK_activity_2
     FOREIGN KEY (fk_content_id)
@@ -170,34 +183,41 @@ ALTER TABLE task ADD CONSTRAINT FK_task_3
     REFERENCES type (id)
     ON DELETE CASCADE;
  
-ALTER TABLE employee_company ADD CONSTRAINT FK_employee_company_1
-    FOREIGN KEY (fk_company_fk_legal_cnpj???, fk_company_fk_legal_fk_people_id)
-    REFERENCES company (???, fk_legal_fk_people_id)
+ALTER TABLE task ADD CONSTRAINT FK_task_4
+    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
+    REFERENCES project (fk_activity_fk_content_id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE level_project ADD CONSTRAINT FK_level_project_1
+    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
+    REFERENCES project (fk_activity_fk_content_id);
+ 
+ALTER TABLE level_project ADD CONSTRAINT FK_level_project_2
+    FOREIGN KEY (fk_task_fk_activity_fk_content_id)
+    REFERENCES task (fk_activity_fk_content_id);
+ 
+ALTER TABLE level_project ADD CONSTRAINT FK_level_project_3
+    FOREIGN KEY (fk_employee_fk_physical_fk_people_id)
+    REFERENCES employee (fk_physical_fk_people_id);
+ 
+ALTER TABLE company_employee ADD CONSTRAINT FK_company_employee_1
+    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
+    REFERENCES company (fk_legal_fk_people_id)
     ON DELETE RESTRICT;
  
-ALTER TABLE employee_company ADD CONSTRAINT FK_employee_company_2
-    FOREIGN KEY (fk_employee_fk_physical_cpf???, fk_employee_fk_physical_fk_people_id)
-    REFERENCES employee (???, fk_physical_fk_people_id)
+ALTER TABLE company_employee ADD CONSTRAINT FK_company_employee_2
+    FOREIGN KEY (fk_employee_fk_physical_fk_people_id)
+    REFERENCES employee (fk_physical_fk_people_id)
     ON DELETE SET NULL;
  
 ALTER TABLE project_company ADD CONSTRAINT FK_project_company_1
-    FOREIGN KEY (fk_company_fk_legal_cnpj???, fk_company_fk_legal_fk_people_id)
-    REFERENCES company (???, fk_legal_fk_people_id)
+    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
+    REFERENCES company (fk_legal_fk_people_id)
     ON DELETE RESTRICT;
  
 ALTER TABLE project_company ADD CONSTRAINT FK_project_company_2
     FOREIGN KEY (fk_project_fk_activity_fk_content_id)
     REFERENCES project (fk_activity_fk_content_id)
-    ON DELETE SET NULL;
- 
-ALTER TABLE project_task ADD CONSTRAINT FK_project_task_1
-    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
-    REFERENCES project (fk_activity_fk_content_id)
-    ON DELETE RESTRICT;
- 
-ALTER TABLE project_task ADD CONSTRAINT FK_project_task_2
-    FOREIGN KEY (fk_task_fk_activity_fk_content_id)
-    REFERENCES task (fk_activity_fk_content_id)
     ON DELETE SET NULL;
  
 ALTER TABLE task_score ADD CONSTRAINT FK_task_score_1
@@ -211,8 +231,8 @@ ALTER TABLE task_score ADD CONSTRAINT FK_task_score_2
     ON DELETE SET NULL;
  
 ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_1
-    FOREIGN KEY (fk_employee_fk_physical_cpf???, fk_employee_fk_physical_fk_people_id)
-    REFERENCES employee (???, fk_physical_fk_people_id)
+    FOREIGN KEY (fk_employee_fk_physical_fk_people_id)
+    REFERENCES employee (fk_physical_fk_people_id)
     ON DELETE RESTRICT;
  
 ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_2
