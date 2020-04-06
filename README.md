@@ -1,2 +1,2 @@
-# documentation
-documentation of project
+# Documentaion
+Project Documentation
