@@ -24,8 +24,7 @@ CREATE TABLE legal (
 
 CREATE TABLE type (
     id INTEGER PRIMARY KEY,
-    name VARCHAR,
-    fk_project_fk_activity_fk_content_id INTEGER
+    name VARCHAR
 );
 
 CREATE TABLE employee (
@@ -38,8 +37,7 @@ CREATE TABLE positions (
     id INTEGER PRIMARY KEY,
     name VARCHAR,
     access_level INTEGER,
-    descripition VARCHAR,
-    fk_company_fk_legal_fk_people_id INTEGER
+    descripition VARCHAR
 );
 
 CREATE TABLE company (
@@ -65,6 +63,8 @@ CREATE TABLE content (
 
 CREATE TABLE activity (
     title VARCHAR,
+    data_entry DATATIME,
+    data_end DATETIME,
     fk_content_id INTEGER PRIMARY KEY,
     fk_status_id INTEGER
 );
@@ -79,17 +79,14 @@ CREATE TABLE project (
 );
 
 CREATE TABLE task (
-    data_entry DATE,
-    data_end DATE,
     fk_activity_fk_content_id INTEGER PRIMARY KEY,
     fk_type_id INTEGER,
-    fk_project_fk_activity_fk_content_id INTEGER
+    fk_score_fk_content_id INTEGER
 );
 
-CREATE TABLE level_project (
+CREATE TABLE level_project_level_project (
     level INTEGER,
     fk_project_fk_activity_fk_content_id INTEGER,
-    fk_task_fk_activity_fk_content_id INTEGER,
     fk_employee_fk_physical_fk_people_id INTEGER
 );
 
@@ -103,14 +100,29 @@ CREATE TABLE project_company (
     fk_project_fk_activity_fk_content_id INTEGER
 );
 
-CREATE TABLE task_score (
-    fk_task_fk_activity_fk_content_id INTEGER,
-    fk_score_fk_content_id INTEGER
+CREATE TABLE project_task (
+    fk_project_fk_activity_fk_content_id INTEGER,
+    fk_task_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE employee_task (
     fk_employee_fk_physical_fk_people_id INTEGER,
     fk_task_fk_activity_fk_content_id INTEGER
+);
+
+CREATE TABLE company_positions (
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_positions_id INTEGER
+);
+
+CREATE TABLE project_task_type (
+    fk_project_fk_activity_fk_content_id INTEGER,
+    fk_type_id INTEGER
+);
+
+CREATE TABLE company_score (
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_score_fk_content_id INTEGER
 );
  
 ALTER TABLE physical ADD CONSTRAINT FK_physical_2
@@ -123,11 +135,6 @@ ALTER TABLE legal ADD CONSTRAINT FK_legal_2
     REFERENCES people (id)
     ON DELETE CASCADE;
  
-ALTER TABLE type ADD CONSTRAINT FK_type_2
-    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
-    REFERENCES project (fk_activity_fk_content_id)
-    ON DELETE CASCADE;
- 
 ALTER TABLE employee ADD CONSTRAINT FK_employee_2
     FOREIGN KEY (fk_physical_fk_people_id)
     REFERENCES physical (fk_people_id)
@@ -136,11 +143,6 @@ ALTER TABLE employee ADD CONSTRAINT FK_employee_2
 ALTER TABLE employee ADD CONSTRAINT FK_employee_3
     FOREIGN KEY (fk_positions_id)
     REFERENCES positions (id)
-    ON DELETE CASCADE;
- 
-ALTER TABLE positions ADD CONSTRAINT FK_positions_2
-    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
-    REFERENCES company (fk_legal_fk_people_id)
     ON DELETE CASCADE;
  
 ALTER TABLE company ADD CONSTRAINT FK_company_2
@@ -184,19 +186,15 @@ ALTER TABLE task ADD CONSTRAINT FK_task_3
     ON DELETE CASCADE;
  
 ALTER TABLE task ADD CONSTRAINT FK_task_4
-    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
-    REFERENCES project (fk_activity_fk_content_id)
+    FOREIGN KEY (fk_score_fk_content_id)
+    REFERENCES score (fk_content_id)
     ON DELETE CASCADE;
  
-ALTER TABLE level_project ADD CONSTRAINT FK_level_project_1
+ALTER TABLE level_project_level_project ADD CONSTRAINT FK_level_project_level_project_1
     FOREIGN KEY (fk_project_fk_activity_fk_content_id)
     REFERENCES project (fk_activity_fk_content_id);
  
-ALTER TABLE level_project ADD CONSTRAINT FK_level_project_2
-    FOREIGN KEY (fk_task_fk_activity_fk_content_id)
-    REFERENCES task (fk_activity_fk_content_id);
- 
-ALTER TABLE level_project ADD CONSTRAINT FK_level_project_3
+ALTER TABLE level_project_level_project ADD CONSTRAINT FK_level_project_level_project_2
     FOREIGN KEY (fk_employee_fk_physical_fk_people_id)
     REFERENCES employee (fk_physical_fk_people_id);
  
@@ -220,14 +218,14 @@ ALTER TABLE project_company ADD CONSTRAINT FK_project_company_2
     REFERENCES project (fk_activity_fk_content_id)
     ON DELETE SET NULL;
  
-ALTER TABLE task_score ADD CONSTRAINT FK_task_score_1
+ALTER TABLE project_task ADD CONSTRAINT FK_project_task_1
+    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
+    REFERENCES project (fk_activity_fk_content_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE project_task ADD CONSTRAINT FK_project_task_2
     FOREIGN KEY (fk_task_fk_activity_fk_content_id)
     REFERENCES task (fk_activity_fk_content_id)
-    ON DELETE SET NULL;
- 
-ALTER TABLE task_score ADD CONSTRAINT FK_task_score_2
-    FOREIGN KEY (fk_score_fk_content_id)
-    REFERENCES score (fk_content_id)
     ON DELETE SET NULL;
  
 ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_1
@@ -238,4 +236,34 @@ ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_1
 ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_2
     FOREIGN KEY (fk_task_fk_activity_fk_content_id)
     REFERENCES task (fk_activity_fk_content_id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE company_positions ADD CONSTRAINT FK_company_positions_1
+    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
+    REFERENCES company (fk_legal_fk_people_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE company_positions ADD CONSTRAINT FK_company_positions_2
+    FOREIGN KEY (fk_positions_id)
+    REFERENCES positions (id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE project_task_type ADD CONSTRAINT FK_project_task_type_1
+    FOREIGN KEY (fk_project_fk_activity_fk_content_id)
+    REFERENCES project (fk_activity_fk_content_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE project_task_type ADD CONSTRAINT FK_project_task_type_2
+    FOREIGN KEY (fk_type_id)
+    REFERENCES type (id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE company_score ADD CONSTRAINT FK_company_score_1
+    FOREIGN KEY (fk_company_fk_legal_fk_people_id)
+    REFERENCES company (fk_legal_fk_people_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE company_score ADD CONSTRAINT FK_company_score_2
+    FOREIGN KEY (fk_score_fk_content_id)
+    REFERENCES score (fk_content_id)
     ON DELETE SET NULL;
