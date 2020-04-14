@@ -84,7 +84,7 @@ CREATE TABLE task (
     fk_score_fk_content_id INTEGER
 );
 
-CREATE TABLE level_project_level_project (
+CREATE TABLE level_project (
     level INTEGER,
     fk_project_fk_activity_fk_content_id INTEGER,
     fk_employee_fk_physical_fk_people_id INTEGER
@@ -190,11 +190,11 @@ ALTER TABLE task ADD CONSTRAINT FK_task_4
     REFERENCES score (fk_content_id)
     ON DELETE CASCADE;
  
-ALTER TABLE level_project_level_project ADD CONSTRAINT FK_level_project_level_project_1
+ALTER TABLE level_project ADD CONSTRAINT FK_level_project_1
     FOREIGN KEY (fk_project_fk_activity_fk_content_id)
     REFERENCES project (fk_activity_fk_content_id);
  
-ALTER TABLE level_project_level_project ADD CONSTRAINT FK_level_project_level_project_2
+ALTER TABLE level_project ADD CONSTRAINT FK_level_project_2
     FOREIGN KEY (fk_employee_fk_physical_fk_people_id)
     REFERENCES employee (fk_physical_fk_people_id);
  
