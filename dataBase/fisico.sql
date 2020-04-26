@@ -1,4 +1,4 @@
-/* LÃ³gico_1: */
+/* Lógico_1: */
 
 CREATE TABLE status (
     id INTEGER PRIMARY KEY,
@@ -91,38 +91,38 @@ CREATE TABLE level_project (
 );
 
 CREATE TABLE company_employee (
-    fk_company_fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_employee_fk_physical_fk_people_id INTEGER PRIMARY KEY
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_employee_fk_physical_fk_people_id INTEGER
 );
 
 CREATE TABLE project_company (
-    fk_company_fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_project_fk_activity_fk_content_id INTEGER PRIMARY KEY
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_project_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE project_task (
-    fk_project_fk_activity_fk_content_id INTEGER PRIMARY KEY,
-    fk_task_fk_activity_fk_content_id INTEGER PRIMARY KEY
+    fk_project_fk_activity_fk_content_id INTEGER,
+    fk_task_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE employee_task (
-    fk_employee_fk_physical_fk_people_id INTEGER PRIMARY KEY,
-    fk_task_fk_activity_fk_content_id INTEGER PRIMARY KEY
+    fk_employee_fk_physical_fk_people_id INTEGER,
+    fk_task_fk_activity_fk_content_id INTEGER
 );
 
 CREATE TABLE company_positions (
-    fk_company_fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_positions_id INTEGER PRIMARY KEY
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_positions_id INTEGER
 );
 
 CREATE TABLE project_task_type (
-    fk_project_fk_activity_fk_content_id INTEGER PRIMARY KEY,
-    fk_type_id INTEGER PRIMARY KEY
+    fk_project_fk_activity_fk_content_id INTEGER,
+    fk_type_id INTEGER
 );
 
 CREATE TABLE company_score (
-    fk_company_fk_legal_fk_people_id INTEGER PRIMARY KEY,
-    fk_score_fk_content_id INTEGER PRIMARY KEY
+    fk_company_fk_legal_fk_people_id INTEGER,
+    fk_score_fk_content_id INTEGER
 );
  
 ALTER TABLE physical ADD CONSTRAINT FK_physical_2
