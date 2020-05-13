@@ -1,0 +1,168 @@
+/* Lógico_1: */
+
+CREATE TABLE status (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR,
+    fk_project_fk_activity_id INTEGER
+);
+
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY,
+    name VARCHAR,
+    password VARCHAR,
+    e_mail VARCHAR
+);
+
+CREATE TABLE physical (
+    cpf VARCHAR,
+    fk_user_id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE legal (
+    cnpj VARCHAR,
+    fk_user_id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE employee (
+    exp INTEGER,
+    fk_physical_fk_user_id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE company (
+    fantasy_name VARCHAR,
+    fk_legal_fk_user_id INTEGER PRIMARY KEY,
+    fk_address_id INTEGER
+);
+
+CREATE TABLE address (
+    neighborhood VARCHAR,
+    cep INTEGER,
+    number INTEGER,
+    id INTEGER PRIMARY KEY,
+    street VARCHAR,
+    city VARCHAR,
+    state VARCHAR
+);
+
+CREATE TABLE activity (
+    title VARCHAR,
+    description VARCHAR,
+    id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE project (
+    fk_activity_id INTEGER PRIMARY KEY
+);
+
+CREATE TABLE task (
+    value VARCHAR,
+    data_entry DATATIME,
+    data_end DATATIME,
+    fk_activity_id INTEGER PRIMARY KEY,
+    fk_status_id INTEGER
+);
+
+CREATE TABLE company_employee (
+    fk_company_fk_legal_fk_user_id INTEGER,
+    fk_employee_fk_physical_fk_user_id INTEGER
+);
+
+CREATE TABLE project_company (
+    fk_company_fk_legal_fk_user_id INTEGER,
+    fk_project_fk_activity_id INTEGER
+);
+
+CREATE TABLE project_task (
+    fk_project_fk_activity_id INTEGER,
+    fk_task_fk_activity_id INTEGER
+);
+
+CREATE TABLE employee_task (
+    fk_employee_fk_physical_fk_user_id INTEGER,
+    fk_task_fk_activity_id INTEGER
+);
+ 
+ALTER TABLE status ADD CONSTRAINT FK_status_2
+    FOREIGN KEY (fk_project_fk_activity_id)
+    REFERENCES project (fk_activity_id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE physical ADD CONSTRAINT FK_physical_2
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE legal ADD CONSTRAINT FK_legal_2
+    FOREIGN KEY (fk_user_id)
+    REFERENCES user (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE employee ADD CONSTRAINT FK_employee_2
+    FOREIGN KEY (fk_physical_fk_user_id)
+    REFERENCES physical (fk_user_id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE company ADD CONSTRAINT FK_company_2
+    FOREIGN KEY (fk_legal_fk_user_id)
+    REFERENCES legal (fk_user_id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE company ADD CONSTRAINT FK_company_3
+    FOREIGN KEY (fk_address_id)
+    REFERENCES address (id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE project ADD CONSTRAINT FK_project_2
+    FOREIGN KEY (fk_activity_id)
+    REFERENCES activity (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE task ADD CONSTRAINT FK_task_2
+    FOREIGN KEY (fk_activity_id)
+    REFERENCES activity (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE task ADD CONSTRAINT FK_task_3
+    FOREIGN KEY (fk_status_id)
+    REFERENCES status (id)
+    ON DELETE CASCADE;
+ 
+ALTER TABLE company_employee ADD CONSTRAINT FK_company_employee_1
+    FOREIGN KEY (fk_company_fk_legal_fk_user_id)
+    REFERENCES company (fk_legal_fk_user_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE company_employee ADD CONSTRAINT FK_company_employee_2
+    FOREIGN KEY (fk_employee_fk_physical_fk_user_id)
+    REFERENCES employee (fk_physical_fk_user_id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE project_company ADD CONSTRAINT FK_project_company_1
+    FOREIGN KEY (fk_company_fk_legal_fk_user_id)
+    REFERENCES company (fk_legal_fk_user_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE project_company ADD CONSTRAINT FK_project_company_2
+    FOREIGN KEY (fk_project_fk_activity_id)
+    REFERENCES project (fk_activity_id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE project_task ADD CONSTRAINT FK_project_task_1
+    FOREIGN KEY (fk_project_fk_activity_id)
+    REFERENCES project (fk_activity_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE project_task ADD CONSTRAINT FK_project_task_2
+    FOREIGN KEY (fk_task_fk_activity_id)
+    REFERENCES task (fk_activity_id)
+    ON DELETE SET NULL;
+ 
+ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_1
+    FOREIGN KEY (fk_employee_fk_physical_fk_user_id)
+    REFERENCES employee (fk_physical_fk_user_id)
+    ON DELETE RESTRICT;
+ 
+ALTER TABLE employee_task ADD CONSTRAINT FK_employee_task_2
+    FOREIGN KEY (fk_task_fk_activity_id)
+    REFERENCES task (fk_activity_id)
+    ON DELETE SET NULL;
